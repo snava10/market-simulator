@@ -26,3 +26,20 @@ def run():
 
     broker.start(['btc'])
 ```
+## Implementation Details
+
+Although all the components of the simulator run in a single process, the system is composed of completely decouple modules that comunicate through events. The traders and the broker are the main components and the event hub is the shared shannel of comunication. If you want to add a new component, like a UI, all you have to do is subscribe or fire the correct events.
+
+Below there is a table of the events and how they are used by the broker and the traders.
+
+| Event        | Broker           | Trader  |
+| ------------- |:-------------:| -----:|
+| Quote | fire | subscribe |
+| Buy | subscribe | fire |
+| Sell | subscribe | fire |
+| Order Completion | fire | subscribe |
+| Register Trader | subscribe | fire |
+| Get Trader Balance | subscribe | |
+| Get Trader Positions | subscribe | |
+
+
