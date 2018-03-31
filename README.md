@@ -42,4 +42,20 @@ Below there is a table of the events and how they are used by the broker and the
 | Get Trader Balance | subscribe | |
 | Get Trader Positions | subscribe | |
 
+## Workflow
+
+## Main
+1. Create the event hub
+2. Create a list with all the traders
+3. Register each trader by firing a Register Trader event
+4. Create an instance of Broker
+5. Invoke start on the broker 
+
+## Broker start
+```
+while True:
+    get_new_quote
+    broadcast_new_quote
+    wait(5 seconds)
+```
 
