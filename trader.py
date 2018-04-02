@@ -23,7 +23,7 @@ class Trader(Logger):
 
     def order_completion_handler(self, order_completion):
         if not order_completion.trader_id == self.id:
-            self.warning('Trades %s should not be receiving this notification' % self.name)
+            self.warning('Trader %s should not be receiving this notification' % self.name)
         else:
             order = order_completion.order
             status = order_completion.status

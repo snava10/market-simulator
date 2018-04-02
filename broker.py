@@ -1,10 +1,11 @@
 
-from events import BuyEvent, SellEvent, QuoteEvent, OrderCompletionEvent, RegisterTraderEvent, GetTraderBalancesEvent, \
-    GetTraderPositionsEvent
-from quote import get_quotes, broadcast_quotes
-from order import BuyOrderCompletion, OrderCompletion, SellOrderCompletion
 import time
+
+from events import BuyEvent, SellEvent, OrderCompletionEvent, RegisterTraderEvent, GetTraderBalancesEvent, \
+    GetTraderPositionsEvent
 from logger import Logger
+from order import BuyOrderCompletion, OrderCompletion, SellOrderCompletion
+from quote import get_quotes, broadcast_quotes
 
 
 class Broker(Logger):
@@ -18,7 +19,7 @@ class Broker(Logger):
         self.event_hub = event_hub
         self.symbols_table = {}
         self.positions = {}
-        self.balaces = {}
+        self.balances = {}
 
     def buy(self, order):
         try:
@@ -90,7 +91,7 @@ class Broker(Logger):
             self.event_hub.fire(OrderCompletionEvent(order_completion))
 
     def update_balance(self, trader_id, cash_flow, symbol, symbol_flow):
-        balance = self.balaces[trader_id]
+        balance = self.balances[trader_id]
         balance['cash'] += cash_flow
         if symbol in balance:
             balance[symbol] += symbol_flow
@@ -99,13 +100,23 @@ class Broker(Logger):
 
     def register_trader(self, trader_id):
         self.positions.setdefault(trader_id, {})
-        self.balaces.setdefault(trader_id, {'cash': 0})
+        self.balances.setdefault(trader_id, {'cash': 0})
 
     def get_trader_balances(self, trader_ids):
-        return [{tid: dict(self.positions.get(tid, {}))} for tid in trader_ids]
+        res = {}
+        for tid in trader_ids:
+            res[str(tid)] = dict(self.balances.get(tid, {}))
+        return res
+        # return [{tid: dict(self.positions.get(tid, {}))} for tid in trader_ids]
 
     def get_trader_positions(self, trader_ids):
-        return [{tid: dict(self.positions.get(tid, {}))} for tid in trader_ids]
+        res = {}
+        for tid in trader_ids:
+            res[str(tid)] = dict(self.positions.get(tid, {}))
+        return res
+
+    def get_registered_trader_ids(self):
+        return self.positions.keys()
 
     def start(self, symbols):
         while 1:
@@ -114,7 +125,7 @@ class Broker(Logger):
                 self.symbols_table = get_quotes(symbols)
                 self.info('Broadcasting the new quotes %s' % self.symbols_table)
                 broadcast_quotes(dict(self.symbols_table), self.event_hub)
-                time.sleep(5)
+                time.sleep(50)
             except Exception as e:
                 self.error(e)
                 break

@@ -1,13 +1,11 @@
-from events import Event, QuoteEvent, EventHub
-from trader import Trader, BuyBuyTrader, BuySellTrader
-from quote import Quote, get_quote, get_and_broadcast_quote
 from broker import Broker
-from order import Order
+from events import EventHub
+from trader import BuyBuyTrader, BuySellTrader
+from web_api.broker_web_api import *
+from threading import Thread
 
 
 def run():
-    event_hub = EventHub()
-    broker = Broker(event_hub)
     traders = [BuySellTrader(event_hub, 'buy sell %d' % x) for x in range(1)]
     traders.append(BuyBuyTrader(event_hub))
     for t in traders:
@@ -17,4 +15,8 @@ def run():
 
 
 if __name__ == '__main__':
-    run()
+    event_hub = EventHub()
+    broker = Broker(event_hub)
+    thread = Thread(target=run)
+    thread.start()
+    start_web_api(broker)
