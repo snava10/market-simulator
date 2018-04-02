@@ -26,6 +26,19 @@ def run():
 
     broker.start(['btc'])
 ```
+# Web Api
+
+Together with the broker simulation a Flask web api to expose the data stored in the broker starts.
+
+## Endpoints
+
+| Endpoint        | Method           | Description  |
+| ------------- |:-------------:| -----:|
+| /trader-ids | GET | List of all the registered trader ids |
+| /positions | POST | Receives a list of trader ids trader_ids=id1,id2 and returns the positions for all the trader ids|
+| /balances | POST | Receives a list of trader ids trader_ids=id1,id2 and returns the ba;ances for all the trader ids |
+
+
 # Implementation Details
 
 Although all the components of the simulator run in a single process, the system is composed of completely decouple modules that comunicate through events. The traders and the broker are the main components and the event hub is the shared shannel of comunication. If you want to add a new component, like a UI, all you have to do is subscribe or fire the correct events.
