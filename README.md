@@ -36,7 +36,7 @@ Together with the broker simulation a Flask web api to expose the data stored in
 | ------------- |:-------------:| -----:|
 | /trader-ids | GET | List of all the registered trader ids |
 | /positions | POST | Receives a list of trader ids trader_ids=id1,id2 and returns the positions for all the trader ids|
-| /balances | POST | Receives a list of trader ids trader_ids=id1,id2 and returns the ba;ances for all the trader ids |
+| /balances | POST | Receives a list of trader ids trader_ids=id1,id2 and returns the balances for all the trader ids |
 
 
 # Implementation Details
